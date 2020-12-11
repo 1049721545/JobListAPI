@@ -1,0 +1,63 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
+
+namespace JobListAPI.Models
+{
+    public class SeedData
+    {
+        public static void Initialize(IServiceProvider serviceProvider)
+        {
+            using (var context = new JobListContext(
+                serviceProvider.GetRequiredService<
+                    DbContextOptions<JobListContext>>()))
+            {
+                if (context.JobList.Any())
+                {
+                    return;
+                }
+
+                context.JobList.AddRange(
+                    new JobList
+                    {
+                        Id = 20061320,
+                        Order = "NMP3914",
+                        Brand = "900g 纽奶乐3段",
+                        Batch = "JH200613-20",
+                        Tinplate = 1089,
+                        Rejection = 211,
+                        Good = 7520,
+                        Bad = 569,
+                        Note = "Accepted by Evans on 12:09 08/08/2020\n"
+                    },
+                    new JobList
+                    {
+                        Id = 20082340,
+                        Order = "YASHI14092",
+                        Brand = "800g Yashily Kieember a1",
+                        Batch = "JH200823-40",
+                        Tinplate = 1200,
+                        Rejection = 0,
+                        Good = 0,
+                        Bad = 0,
+                        Note = "Accepted by Evans on 07:09 08/08/2020\n"
+                    },
+                    new JobList
+                    {
+                        Id = 20061350,
+                        Order = "NMP3914",
+                        Brand = "900g 纽奶乐3段",
+                        Batch = "JH200613-50",
+                        Tinplate = 1100,
+                        Rejection = 111,
+                        Good = 7520,
+                        Bad = 569,
+                        Note = "Accepted by Evans on 12:12 08/08/2020\n"
+                    }
+                );
+                context.SaveChanges();
+            }
+        }
+    }
+}
