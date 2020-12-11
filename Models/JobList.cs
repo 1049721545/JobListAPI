@@ -5,14 +5,15 @@ namespace JobListAPI.Models
     public class JobList
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public long Id { get; set; }
-        public string Order { get; set; }
-        public string Brand { get; set; }
-        public string Batch { get; set; }
-        public int Tinplate { get; set; }
-        public int Rejection { get; set; }
-        public int Good { get; set; }
-        public int Bad { get; set; }
-        public string Note { get; set; }
+        public long id { get; set; }
+        public bool isActive { get; set; }
+        public string title { get; set; }
+        public string location { get; set; }
+        public string industry { get; set; }
+        public string picture { get; set; }
+        public string company { get; set; }
+        public string email { get; set; }
+        public string jobDesc { get; set; }
+        public string postedOn { get; set; }
     }
 }

@@ -20,14 +20,8 @@ namespace JobListAPI.Controllers
         public IQueryable<JobList> JobListQuery(string searchString)
         {
             var joblist = from r in _context.JobList
-                            select r;
+                          select r;
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                joblist = joblist.Where(r => r.Order.Contains(searchString)
-                                            || r.Batch.Contains(searchString)
-                                            || r.Brand.Contains(searchString));
-            }
             return joblist;
         }
 
