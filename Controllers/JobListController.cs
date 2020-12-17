@@ -1,47 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using JobListAPI.Models;
+using JobListAPI.Model;
+using JobListAPI.Service;
 
 namespace JobListAPI.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
-    public class JobListController : ControllerBase
+    [Route("api/joblists")]
+    public class JobListController : Controller
     {
-        private readonly JobListContext _context;
-        public JobListController(JobListContext context)
-        {
-            _context = context;
-        }
 
-        public IQueryable<JobList> JobListQuery(string searchString)
-        {
-            var joblist = from r in _context.JobList
-                          select r;
+        private readonly IJobListService _jobListService;
 
-            return joblist;
+        public JobListController(
+            IJobListService joblistService)
+        {
+            _jobListService = joblistService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobList>>> GetJobList()
+        public async Task<ActionResult<IEnumerable<JobList>>> GetJobLists()
         {
-            return await _context.JobList.ToListAsync();
-        }
+            var joblists = await _jobListService.GetJobLists();
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<JobList>> GetJobList(long id)
-        {
-            var joblist = await _context.JobList.FindAsync(id);
-
-            if (joblist == null)
-            {
-                return NotFound();
-            }
-
-            return joblist;
+            return joblists.ToList();
         }
     }
 }
