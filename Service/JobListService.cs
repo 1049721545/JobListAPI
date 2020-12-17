@@ -10,6 +10,7 @@ namespace JobListAPI.Service
     public interface IJobListService
     {
         Task<IEnumerable<JobList>> GetJobLists();
+        Task<JobList> GetJobById(long ID);
     }
     public class JobListService : IJobListService
     {
@@ -28,5 +29,11 @@ namespace JobListAPI.Service
             return joblists;
         }
 
+        public async Task<JobList> GetJobById(long ID)
+        {
+            var job = await Task.Run(() => _jobListRepo.GetJobLists().First(x => x.ID == ID));
+
+            return job;
+        }
     }
 }

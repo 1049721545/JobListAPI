@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using JobListAPI.Model;
 using JobListAPI.Service;
 
@@ -27,6 +28,21 @@ namespace JobListAPI.Controllers
             var joblists = await _jobListService.GetJobLists();
 
             return joblists.ToList();
+        }
+
+        [HttpGet("{ID}")]
+        public async Task<ActionResult<JobList>> GetJob(long Id)
+        {
+            var job = await _jobListService.GetJobById(Id);
+
+            if (job == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return job;
+            }          
         }
     }
 }
