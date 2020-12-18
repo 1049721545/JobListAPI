@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +9,7 @@ namespace JobListAPI.Service
 {
     public interface IJobListService
     {
-        Task<IEnumerable<JobList>> GetJobLists();
+        Task<IEnumerable<JobList>> GetJobLists(JobList p);
         Task<JobList> GetJobById(long ID);
     }
     public class JobListService : IJobListService
@@ -21,17 +21,28 @@ namespace JobListAPI.Service
             _jobListRepo = jobListRepo;
         }
 
-        public async Task<IEnumerable<JobList>> GetJobLists()
+        public async Task<IEnumerable<JobList>> GetJobLists(JobList p)
         {
-
-            var joblists = await Task.Run(() => _jobListRepo.GetJobLists().ToList());
+            IEnumerable<JobList> joblists = null;
+            if (p.IsActive.HasValue)
+            {
+                joblists = await Task.Run(() => _jobListRepo.GetJobLists().Where(x => x.IsActive == p.IsActive).ToList());
+            }
+            else if
+            {
+                joblists = await Task.Run(() => _jobListRepo.GetJobLists().Where(x => x.PostedOn == p.PostedOn).ToList());
+            }
+            else
+            {
+                joblists = await Task.Run(() => _jobListRepo.GetJobLists().ToList());
+            }
 
             return joblists;
         }
 
         public async Task<JobList> GetJobById(long ID)
         {
-            var job = await Task.Run(() => _jobListRepo.GetJobLists().First(x => x.ID == ID));
+            var job = await Task.Run(() => _jobListRepo.GetJobLists().FirstOrDefault(x => x.ID == ID));
 
             return job;
         }

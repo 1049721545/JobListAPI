@@ -13,25 +13,24 @@ namespace JobListAPI.Controllers
     [Route("api/joblists")]
     public class JobListController : Controller
     {
-
         private readonly IJobListService _jobListService;
 
         public JobListController(
-            IJobListService joblistService)
+            IJobListService jobListService)
         {
-            _jobListService = joblistService;
+            _jobListService = jobListService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobList>>> GetJobLists()
+        public async Task<ActionResult<IEnumerable<JobList>>> GetJobLists([FromQuery] JobList p)
         {
-            var joblists = await _jobListService.GetJobLists();
+            var joblists = await _jobListService.GetJobLists(p);
 
             return joblists.ToList();
         }
 
         [HttpGet("{ID}")]
-        public async Task<ActionResult<JobList>> GetJob(long Id)
+        public async Task<ActionResult<JobList>> GetJobById(long Id)
         {
             var job = await _jobListService.GetJobById(Id);
 
