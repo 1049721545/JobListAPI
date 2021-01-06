@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace JobListAPI.Model
 {
@@ -9,6 +10,7 @@ namespace JobListAPI.Model
     {
         public int ID { get; set; }
         public bool IsActive { get; set; }
+        [Required]
         public string Title { get; set; }
         public string Location { get; set; }
         public string Industry { get; set; }
@@ -16,6 +18,13 @@ namespace JobListAPI.Model
         public string Company { get; set; }
         public string Email { get; set; }
         public string JobDesc { get; set; }
+        public DateTime PostedOn { get; set; }
+    }
+
+    public class JobFilter
+    {
+        public string Title { get; set; }
+        public bool IsActive { get; set; }
         public DateTime PostedOn { get; set; }
     }
 }

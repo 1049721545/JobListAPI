@@ -9,8 +9,11 @@ namespace JobListAPI.Service
 {
     public interface IJobListService
     {
-        Task<IEnumerable<JobList>> GetJobLists(JobList p);
-        Task<JobList> GetJobById(long ID);
+        Task<IEnumerable<JobList>> GetJobs(JobFilter filter);
+        Task<JobList> GetJob(int id);
+        Task<JobList> CreateJob(JobList job);
+        Task UpdateJob(int id, JobList job);
+        Task DeleteJob(int id);
     }
     public class JobListService : IJobListService
     {
@@ -21,30 +24,35 @@ namespace JobListAPI.Service
             _jobListRepo = jobListRepo;
         }
 
-        public async Task<IEnumerable<JobList>> GetJobLists(JobList p)
+        public async Task<IEnumerable<JobList>> GetJobs(JobFilter filter)
         {
-            IEnumerable<JobList> joblists = null;
-            if (p.IsActive.HasValue)
-            {
-                joblists = await Task.Run(() => _jobListRepo.GetJobLists().Where(x => x.IsActive == p.IsActive).ToList());
-            }
-            else if
-            {
-                joblists = await Task.Run(() => _jobListRepo.GetJobLists().Where(x => x.PostedOn == p.PostedOn).ToList());
-            }
-            else
-            {
-                joblists = await Task.Run(() => _jobListRepo.GetJobLists().ToList());
-            }
 
-            return joblists;
+            var jobs = await _jobListRepo.GetJobs(filter);
+
+            return jobs;
         }
 
-        public async Task<JobList> GetJobById(long ID)
+        public async Task<JobList> GetJob(int id)
         {
-            var job = await Task.Run(() => _jobListRepo.GetJobLists().FirstOrDefault(x => x.ID == ID));
-
+            var job = await _jobListRepo.GetJob(id);
             return job;
+        }
+
+        public async Task<JobList> CreateJob(JobList job)
+        {
+            var res = await _jobListRepo.CreateJob(job);
+            return res;
+        }
+
+        public async Task UpdateJob(int id, JobList job)
+        {
+            job.ID = id;
+            await _jobListRepo.UpdateJob(job);
+        }
+
+        public async Task DeleteJob(int id)
+        {
+            await _jobListRepo.DeleteJob(id);
         }
     }
 }

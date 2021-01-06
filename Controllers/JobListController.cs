@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using JobListAPI.Model;
 using JobListAPI.Service;
 
@@ -11,37 +10,71 @@ namespace JobListAPI.Controllers
 {
     [ApiController]
     [Route("api/joblists")]
-    public class JobListController : Controller
+    public class JobController : Controller
     {
+
         private readonly IJobListService _jobListService;
 
-        public JobListController(
+        public JobController(
             IJobListService jobListService)
         {
             _jobListService = jobListService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobList>>> GetJobLists([FromQuery] JobList p)
+        public async Task<ActionResult<IEnumerable<JobList>>> GetJobs()
         {
-            var joblists = await _jobListService.GetJobLists(p);
+            _ = DateTime.TryParse(HttpContext.Request.Query["postedon"].ToString(), out DateTime postedOn);
 
-            return joblists.ToList();
+            var filter = new JobFilter
+            {
+                IsActive = HttpContext.Request.Query["isactive"].ToString() == "true",
+                PostedOn = postedOn,
+                Title = HttpContext.Request.Query["title"].ToString()
+            };
+                
+            var jobs = await _jobListService.GetJobs(filter);
+
+            return jobs.ToList();
         }
 
-        [HttpGet("{ID}")]
-        public async Task<ActionResult<JobList>> GetJobById(long Id)
-        {
-            var job = await _jobListService.GetJobById(Id);
+        [HttpGet]
+        [Route("{id}")]
 
-            if (job == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                return job;
-            }          
+        public async Task<ActionResult<JobList>> GetJob(int id)
+        {
+            var job = await _jobListService.GetJob(id);
+
+            return job;
+        }
+
+        [HttpPost]
+
+        public async Task<ActionResult<JobList>> PostJob(JobList job)
+        {
+            var response = await _jobListService.CreateJob(job);
+
+            return response;
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+
+        public async Task<ActionResult> PutJob(int id, JobList job)
+        {
+            await _jobListService.UpdateJob(id, job);
+
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+
+        public async Task<ActionResult> DeleteJob(int id)
+        {
+            await _jobListService.DeleteJob(id);
+
+            return NoContent();
         }
     }
 }
